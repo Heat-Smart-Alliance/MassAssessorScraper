@@ -1,7 +1,7 @@
 # MassAssessorScraper
 
 ## About this project
-This is a web scraper which scrapes Massachussets housing data from the 
+This is a web scraper which scrapes Massachusetts housing data from the 
 [Massachusetts Assessor’s Online Database](https://www.vgsi.com/massachusetts-online-database/) using [puppeteer](https://github.com/puppeteer/puppeteer).
 
 Currently, this web scraper only prints out the heating data of the household. 
