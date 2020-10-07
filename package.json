@@ -11,7 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mongoose": "^5.10.7",
-    "puppeteer": "^5.3.1"
+    "mongoose": "^5.10.8",
+    "puppeteer": "^5.3.1",
+    "puppeteer-cluster": "^0.22.0"
   }
 }
