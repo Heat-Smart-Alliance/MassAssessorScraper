@@ -11,7 +11,6 @@ const House = require('../models/House');
     });
 
     const saveHouse = async ({page, data: url }) => {
-        console.log(`Going to home at: ${url}`);
         await page.goto(url);
         const houseData = await page.evaluate(async () => {
             return {
@@ -30,7 +29,6 @@ const House = require('../models/House');
     const visitStreet = async ({ page, data: url }) => {
         console.log(`Going to ${url}`);
         await page.goto(url);
-        console.log("Found data at URL");
         const letterLinks = await page.evaluate(() => {
             const data = Array.from(document
                 .querySelectorAll(".buttonMe > a"))
@@ -57,9 +55,6 @@ const House = require('../models/House');
             }
         }
     };
-
-    // const browser = await puppeteer.launch();
-    // const page = await browser.newPage();
 
     mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true});
     const db = mongoose.connection;
