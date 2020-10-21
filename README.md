@@ -19,8 +19,8 @@ Additionally, it is extremely slow to traverse page-by-page and collecting the p
 
 ## Planned Features
 - [x] Prove MVP by collecting just heating data
-- [ ] Store data locally in MongoDB
+- [x] Store data locally in MongoDB
 - [ ] Store data on an online MongoDB database
-- [ ] Add more puppeteer clusters to allow for faster data scraping
+- [x] Add more puppeteer clusters to allow for faster data scraping
 - [ ] Dockerize the project
 - [ ] Create a cron job to check when the town's data was most recently updated, and rescrape the data/check for changes.
