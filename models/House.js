@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const CivicSchema = require("./CivicData");
 
 const deleteEmpty = (str) => {
     if(str.length == 0) {
@@ -9,6 +10,7 @@ const deleteEmpty = (str) => {
 }
 
 const houseSchema = new Schema({
+    civicData: [CivicSchema],
     heatType: {
         type: String,
         required: false,
@@ -64,7 +66,22 @@ const houseSchema = new Schema({
         required: false,
         set: deleteEmpty
     },
+    // squareFeet: {
+    //     type: Number,
+    //     required: false,
+    //     set: deleteEmpty
+    // },
     totalRooms: {
+        type: String,
+        required: false,
+        set: deleteEmpty
+    },
+    townName: {
+        type: String,
+        required: false,
+        set: deleteEmpty
+    },
+    appraisal: {
         type: String,
         required: false,
         set: deleteEmpty

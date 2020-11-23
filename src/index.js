@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const mongoose = require('mongoose');
+
 const { Cluster } = require('puppeteer-cluster');
 const House = require('../models/House');
 
@@ -22,6 +23,7 @@ const House = require('../models/House');
 
     const saveHouse = async ({page, data: url }) => {
         await page.goto(url);
+        const axios = require('axios');
         const houseData = await page.evaluate(async () => {
             function getTableElement(table, ...searchTerms){
                 const elementText = table.filter(htmlRow => {
@@ -33,7 +35,16 @@ const House = require('../models/House');
                 return elementText && elementText[0].getElementsByTagName("td")[1].innerText;
             }
             const table = Array.from(document.getElementById("MainContent_ctl01_grdCns").rows);
+            const address = `${document.getElementById("MainContent_lblLocation").innerText} ${document.getElementById("lblTownName").innerText}`;
+            const API_KEY = "API_KEY";
+            fetch(`https://www.googleapis.com/civicinfo/v2/representatives?key=${API_KEY}&address=${encodeURIComponent(address)}`)
+                .then(response => response)
+                .then(data => console.log(data))
+                .catch(err => console.log(err))
+            // Civic Data Key: AIzaSyCqLyvHP2GlwqHgGWrMqKoaY16MtX8wTP4
+            // const squareFeetTable = document.getElementById("MainContent_ctl01_grdSub").getElementsByClassName("FooterStyle");
             return {
+                // appraisal: document.getElementById("MainContent_lblGenAppraisal").innerText,
                 owner: document.getElementById("MainContent_lblGenOwner").innerText,
                 assessment: document.getElementById("MainContent_lblGenAssessment").innerText,
                 salePrice: document.getElementById("MainContent_lblPrice").innerText,
@@ -47,7 +58,8 @@ const House = require('../models/House');
                 stories: getTableElement(table, "stories"),
                 heatType: getTableElement(table, "heat type", "heating type"),
                 heatFuel: getTableElement(table, "heat fuel", "heating fuel"),
-                address: `${document.getElementById("MainContent_lblLocation").innerText} ${document.getElementById("lblTownName").innerText}`,
+                address: address,
+                townName: `${document.getElementById("lblTownName").innerText}`
             };
         });
         const house = new House(houseData);
