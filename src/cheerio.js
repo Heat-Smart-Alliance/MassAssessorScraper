@@ -69,11 +69,13 @@ Object.defineProperty(Array.prototype, 'chunk', {
             }
         }));
 
-        streetLinks = streetLinks.filter(link => link).flat().chunk(3000);
+        streetLinks = streetLinks.filter(link => link).flat().chunk(500);
 
         console.log("Chunk Length", streetLinks.length);
         let houseLinks = [];
+        let chunk = 0;
         for(let streets of streetLinks) {
+            console.log(`On chunk: ${++chunk}`);
             const {results, errors} = await PromisePool
                 .for(streets)
                 .withConcurrency(500)
@@ -93,7 +95,22 @@ Object.defineProperty(Array.prototype, 'chunk', {
             console.log(errors);
         }
 
-        houseLinks = houseLinks.flat();
+        houseLinks = houseLinks.flat(2).chunk(10000);
+        let houseChunk = 0;
+        for(let houses of houseLinks){
+            console.log(`On house chunk ${++houseChunk} of ${houseLinks.length}`);
+            const { result, errors } = await PromisePool
+                .for(houses)
+                .withConcurrency(1000)
+                .handleError(async (error, user) => {
+                    console.log("Housing links error", error);
+                })
+                .process(async link => {
+                   const { data } = await axios.get(link);
+                   const $ = cheerio.load(data);
+                   
+                });
+        }
         console.log("House links are now flattened", houseLinks);
 
     } catch (e) {
