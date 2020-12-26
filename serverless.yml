@@ -7,6 +7,7 @@ org: dodellmitchell
 plugins:
   - serverless-offline
   - serverless-offline-scheduler
+  - serverless-dotenv-plugin
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 frameworkVersion: '1'
@@ -48,8 +49,8 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handlers/handler.hello
+  saveTowns:
+    handler: handlers/saveTowns/handler.saveTowns
     events:
       - schedule: rate(1 minute)
 

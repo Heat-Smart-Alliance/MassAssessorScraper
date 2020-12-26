@@ -148,9 +148,6 @@ async function scrapeHouses() {
             scrapeHouses();
         }).catch(e => console.log(e));
         const db = mongoose.connection;
-
-
-
     } catch (e) {
         console.log('Bad Error', e);
     }
