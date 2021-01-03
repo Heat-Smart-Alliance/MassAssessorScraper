@@ -1,12 +1,11 @@
 const moment = require('moment');
 
 function convertTownDate(date) {
-    console.log(date);
     switch(date) {
         case "":
-            return moment.now();
+            return moment.now().valueOf();
         case "Daily":
-            return moment.now();
+            return moment().startOf("day").valueOf();
         case "Monthly":
             return moment().startOf("month").valueOf();
         default:

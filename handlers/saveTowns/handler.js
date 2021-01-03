@@ -4,19 +4,21 @@ const {loadData} = require("../../sharedUtils/cheerioUtils");
 const { TownUtils } = require('./utils');
 
 module.exports.saveTowns = async event => {
-    const base = "https://www.vgsi.com/massachusetts-online-database/";
+    const baseLink = "https://www.vgsi.com/massachusetts-online-database/";
 
-    const utils = new TownUtils(await loadData(base));
+    const pageData = await loadData(baseLink);
 
-    const townLinks = utils.getTownLinks();
+    const utils = new TownUtils(pageData);
 
-    await utils.saveTownInformation();
+    let townsToUpdate = await utils.getTownsToUpdate();
+
+    const townLinks = utils.getTownLinksToScrape(townsToUpdate);
 
     return {
         statusCode: 200,
         body: JSON.stringify(
             {
-                message: "test",
+                message: townLinks,
                 input: event,
             },
             null,
