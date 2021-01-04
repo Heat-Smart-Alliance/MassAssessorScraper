@@ -1,14 +1,5 @@
 version: '3'
 services:
-  scraper:
-    container_name: 'assessor_scraper'
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env.development
-    ports:
-      - '3000:3000'
   database:
     image: 'mongo'
     container_name: 'mongo-container'
@@ -22,8 +13,20 @@ services:
     ports:
       - '27017-27019:27017-27019'
     command: mongod --quiet --logpath /dev/null
-  elasticmq:
-    image: 's12v/elasticmq'
-    container_name: 'elasticmq'
+  sqs:
+    image: softwaremill/elasticmq:latest
     ports:
-      - '9324:9324'
+      - "9324:9324"
+  sqs-create:
+    image: infrastructureascode/aws-cli:latest
+    links:
+      - sqs
+    entrypoint: sh
+    command: ./create-queues.sh
+    volumes:
+      - ./scripts/create-queues.sh:/project/create-queues.sh:ro
+    environment:
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - AWS_DEFAULT_REGION=eu-east-1
+      - AWS_ENDPOINT_URL=http://sqs:9324

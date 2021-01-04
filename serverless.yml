@@ -7,23 +7,62 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-offline
 
+package:
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - node_modules/**
+    - mongo-volume/**
+    - src/**
+    - scripts/**
+    - docker-compose.yml
+    - init-mongo.js
+    - .dockerignore
+    - README.md
+
 provider:
   name: aws
   runtime: nodejs12.x
   stage: dev
   region: us-east-1
-  lambdaHashingVersion: 20201221
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:ReceiveMessage"
+      Resource: "arn:aws:sqs:${self:provider.region}:*:TownQueue"
 
 functions:
   saveTowns:
     handler: handlers/saveTowns/handler.saveTowns
+    package:
+      exclude:
+        - handlers/saveLetters/**
     events:
       - schedule: rate(1 minute)
+  saveLetters:
+    handler: handlers/saveLetters/handler.saveLetters
+    package:
+      exclude:
+        - handlers/saveTowns/**
+        - models/**
+        - sharedUtils/databaseUtils.js
+        - sharedUtils/dateUtils.js
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - TownQueue
+              - Arn
+
+resources:
+  Resources:
+    TownQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "TownQueue"
 
 custom:
-  custom:
-    serverless-offline:
-      host: 0.0.0.0
   serverless-offline-sqs:
     autoCreate: true                 # create queue if not exists
     apiVersion: '2012-11-05'

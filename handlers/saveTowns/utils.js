@@ -38,6 +38,7 @@ class TownUtils {
             }
         }).get();
 
+        console.log("Got towns to scrape!");
         return townLinksToUpdate;
     }
 

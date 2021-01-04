@@ -1,5 +1,9 @@
 # MassAssessorScraper
 
+## Local Installation
+This project requires an installation of Docker, Docker Compose and Serverless Offline to run locally.
+
+
 ## About this project
 This is a web scraper which scrapes Massachusetts housing data from the 
 [Massachusetts Assessor’s Online Database](https://www.vgsi.com/massachusetts-online-database/) using [puppeteer](https://github.com/puppeteer/puppeteer).
@@ -16,11 +20,3 @@ From the street, we can see what homes are hosted on that street.
 The page is not well-formatted (different spelling/inconsistent tables, missing data, etc.). 
 
 Additionally, it is extremely slow to traverse page-by-page and collecting the proper data. 
-
-## Planned Features
-- [x] Prove MVP by collecting just heating data
-- [x] Store data locally in MongoDB
-- [ ] Store data on an online MongoDB database
-- [x] Add more puppeteer clusters to allow for faster data scraping
-- [ ] Dockerize the project
-- [ ] Create a cron job to check when the town's data was most recently updated, and rescrape the data/check for changes.
