@@ -1,0 +1,24 @@
+version: '3'
+services:
+  scraper:
+    container_name: 'assessor_scraper'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env.development
+    ports:
+      - '3000:3000'
+  database:
+    image: 'mongo'
+    container_name: 'mongo-container'
+    environment:
+      - MONGO_INITDB_DATABASE=scraper_database
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+    - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    - ./mongo-volume:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+    command: mongod --quiet --logpath /dev/null

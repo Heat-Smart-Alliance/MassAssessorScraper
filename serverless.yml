@@ -1,5 +1,4 @@
 service: assessorscraper
-enableLocalInstallationFallback: false
 app: assessor-scraper
 # Plugins for the project
 plugins:
@@ -13,6 +12,7 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: us-east-1
+  lambdaHashingVersion: 20201221
 
 functions:
   saveTowns:
@@ -21,6 +21,9 @@ functions:
       - schedule: rate(1 minute)
 
 custom:
+  custom:
+    serverless-offline:
+      host: 0.0.0.0
   serverless-offline-sqs:
     autoCreate: true                 # create queue if not exists
     apiVersion: '2012-11-05'
