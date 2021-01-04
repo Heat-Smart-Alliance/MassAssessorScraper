@@ -9,7 +9,7 @@ const sqs = new AWS.SQS({
 });
 
 const AWS_ACCOUNT = process.env.ACCOUNT_ID;
-const QUEUE_URL = 'http://localhost:9324/queue/TownQueue';
+const QUEUE_URL = `${process.env.QUEUE_URL}TownQueue`;
 
 
 module.exports.saveTowns = async (event, context, callback) => {
