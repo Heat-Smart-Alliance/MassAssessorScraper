@@ -3,6 +3,7 @@ trap "exit 1" INT
 
 AWS_ENDPOINT_URL=${AWS_ENDPOINT_URL:-http://localhost:9324}
 
+# Creates the queues in this list locally. Each queue is separated by spaces.
 QUEUES="TownQueue";
 for QUEUE in $QUEUES
 do

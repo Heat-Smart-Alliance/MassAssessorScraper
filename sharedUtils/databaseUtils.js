@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
 
+/**
+ * connectToDatabase connects to the mongo database and returns the mongoose connection
+ * @returns the connection to the mongo database
+ */
 async function connectToDB() {
-    console.log("DATABASE URL IS: ", process.env.DATABASE_URL);
     await mongoose.connect(process.env.DATABASE_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
-        console.log("Connecting! Starting to scrape houses now!");
+        console.log("Connected to database");
     }).catch(e => console.log(e));
     const db = mongoose.connection;
     return db;
