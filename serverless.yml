@@ -12,6 +12,10 @@ package:
   excludeDevDependencies: true
   exclude:
     - node_modules/**
+    - '!node_modules/axios/**'
+    - '!node_modules/mongoose/**'
+    - '!node_modules/moment/**'
+    - '!node_modules/cheerio/**'
     - mongo-volume/**
     - src/**
     - scripts/**

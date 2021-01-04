@@ -2,4 +2,4 @@
 node_modules/
 .env.*
 mongo-volume/
-../../../Desktop/.serverless/
+.serverless/
