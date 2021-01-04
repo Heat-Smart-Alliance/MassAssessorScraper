@@ -22,3 +22,8 @@ services:
     ports:
       - '27017-27019:27017-27019'
     command: mongod --quiet --logpath /dev/null
+  elasticmq:
+    image: 's12v/elasticmq'
+    container_name: 'elasticmq'
+    ports:
+      - '9324:9324'
