@@ -19,6 +19,7 @@ package:
     - init-mongo.js
     - .dockerignore
     - README.md
+    - handlers/**
 
 provider:
   name: aws
@@ -36,15 +37,16 @@ functions:
   saveTowns:
     handler: handlers/saveTowns/handler.saveTowns
     package:
-      exclude:
-        - handlers/saveLetters/**
+      include:
+        - handlers/saveTowns/**
     events:
       - schedule: rate(1 minute)
   saveLetters:
     handler: handlers/saveLetters/handler.saveLetters
     package:
+      include:
+        - handlers/saveLetters/**
       exclude:
-        - handlers/saveTowns/**
         - models/**
         - sharedUtils/databaseUtils.js
         - sharedUtils/dateUtils.js
