@@ -1,8 +1,20 @@
 version: '3'
 services:
+#  serverless:
+#    container_name: 'serverless'
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    env_file:
+#      - .env.development
+#    ports:
+#      - '3000:3000'
+#    depends_on:
+#      - sqs
+#    command: ["./wait-for-it.sh", "sqs:9324", "--", "serverless", "offline"]
   database:
     image: 'mongo'
-    container_name: 'mongo-container'
+    container_name: 'database'
     environment:
       - MONGO_INITDB_DATABASE=scraper_database
       - MONGO_INITDB_ROOT_USERNAME=admin
@@ -15,10 +27,12 @@ services:
     command: mongod --quiet --logpath /dev/null
   sqs:
     image: softwaremill/elasticmq:latest
+    container_name: 'sqs'
     ports:
-      - "9324:9324"
+      - '9324:9324'
   sqs-create:
     image: infrastructureascode/aws-cli:latest
+    container_name: 'sqs-create'
     links:
       - sqs
     entrypoint: sh

@@ -1,19 +1,20 @@
 'use strict';
 
 const Town = require("../../models/Town");
+const { CheerioUtils } = require('../../sharedUtils/cheerioUtils');
 const { connectToDB } = require("../../sharedUtils/databaseUtils");
 const { convertTownDate } = require("../../sharedUtils/dateUtils");
 
 /**
  * @class The TownUtils class represents the town web page, which can be found at https://www.vgsi.com/massachusetts-online-database/.
  */
-class TownUtils {
+class TownUtils extends CheerioUtils {
     /**
      * The constructor for TownUtils
-     * @param $ - the loaded page data
+     * @param pageData - the loaded page data
      */
-    constructor($){
-        this.$ = $;
+    constructor(pageData){
+        super(pageData);
     }
 
     /**
@@ -23,6 +24,7 @@ class TownUtils {
      */
     getTownLinksToScrape(townsToUpdate) {
         const $ = this.$;
+
         const townLinksToUpdate = $('td > a').map((i, tableLink) => {
             const potentialLink = $(tableLink);
             const townName = potentialLink.text().split(", ")[0];

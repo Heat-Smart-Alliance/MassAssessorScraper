@@ -30,6 +30,8 @@ provider:
       Action:
         - "sqs:SendMessage"
         - "sqs:ReceiveMessage"
+        - "sqs:DeleteMessage"
+        - "sqs:GetQueueAttributes"
       Resource: "arn:aws:sqs:${self:provider.region}:*:TownQueue"
 
 functions:
@@ -39,7 +41,9 @@ functions:
       include:
         - handlers/saveTowns/**
     events:
-      - schedule: rate(1 minute)
+      - http:
+          path: saveTowns
+          method: get
   saveLetters:
     handler: handlers/saveLetters/handler.saveLetters
     package:

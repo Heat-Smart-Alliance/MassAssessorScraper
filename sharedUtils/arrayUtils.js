@@ -8,9 +8,10 @@
  * @param d - the depth, defaulted to 1, in which the array should be flattened
  * @returns [{}] - an array of objects
  */
-function flat(arr, d = 1) {
-    return d > 0 ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
-        : arr.slice();
+function flat(arr, depth = 1) {
+    return arr.reduce(function (flat, toFlatten) {
+        return flat.concat((Array.isArray(toFlatten) && (depth > 1)) ? toFlatten.flat(depth - 1) : toFlatten);
+    }, []);
 }
 
 /**

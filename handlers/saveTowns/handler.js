@@ -24,11 +24,11 @@ module.exports.saveTowns = async (event, context, callback) => {
     const baseLink = "https://www.vgsi.com/massachusetts-online-database/";
     const pageData = await loadData(baseLink);
 
-    const utils = new TownUtils(pageData);
+    const townUtil = new TownUtils(pageData);
 
-    let townsToUpdate = await utils.getTownsToUpdate();
+    let townsToUpdate = await townUtil.getTownsToUpdate();
 
-    const townLinks = utils.getTownLinksToScrape(townsToUpdate);
+    const townLinks = townUtil.getTownLinksToScrape(townsToUpdate);
 
     const params = {
         MessageBody: JSON.stringify(townLinks),
