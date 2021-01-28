@@ -1,6 +1,3 @@
 #!/bin/bash
 
-while [ "$( docker container inspect -f '{{.State.Running}}' $container_name )" == "true" ]
-do
-  print('Waiting for container to be up')
-done
+npm install --loglevel=error && docker-compose build && docker-compose up -d

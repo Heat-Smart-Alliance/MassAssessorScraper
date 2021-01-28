@@ -1,17 +1,11 @@
-FROM node:12
+FROM lambci/lambda:build-nodejs12.x
 
-RUN npm --loglevel=error install -g serverless && npm --loglevel=error install -g serverless-offline
+WORKDIR /app
 
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-COPY ./scripts/wait-for-it.sh ./
-
-RUN ["chmod", "+x", "/usr/src/app/wait-for-it.sh"]
+COPY package.json ./
 
 RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+ENTRYPOINT ["/bin/bash"]
