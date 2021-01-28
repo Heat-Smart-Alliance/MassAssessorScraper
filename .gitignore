@@ -1,2 +1,5 @@
 .idea/*
-node_modules
+node_modules/
+.env.*
+mongo-volume/
+.serverless/

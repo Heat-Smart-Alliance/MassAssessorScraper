@@ -1,0 +1,56 @@
+version: "3"
+services:
+  sqs:
+    image: softwaremill/elasticmq:latest
+    ports:
+      - "9324:9324"
+    volumes:
+      - ./sqs-offline.conf:/opt/elasticmq.conf
+  sqs-create:
+    build: .
+    links:
+      - sqs
+    entrypoint: sh
+    volumes:
+      - ./:/app
+      - ./scripts/create-queues.sh:/app/create-queues.sh:ro
+    environment:
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://sqs:9324
+    ports:
+      - "3000:3000"
+    command: -c 'npm run init-env && npm run docker-start'
+  database:
+    image: 'mongo'
+    container_name: 'database'
+    environment:
+      - MONGO_INITDB_DATABASE=scraper_database
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+    - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    - ./mongo-volume:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+    command: mongod --quiet --logpath /dev/null
+#  sqs:
+#    image: softwaremill/elasticmq:latest
+#    container_name: 'sqs'
+#    ports:
+#      - '9324:9324'
+#  sqs-create:
+#    image: infrastructureascode/aws-cli:latest
+#    container_name: 'sqs-create'
+#    links:
+#      - sqs
+#    entrypoint: sh
+#    command: ./create-queues.sh
+#    volumes:
+#      - ./scripts/create-queues.sh:/project/create-queues.sh:ro
+#    environment:
+#      - AWS_ACCESS_KEY_ID=local
+#      - AWS_SECRET_ACCESS_KEY=local
+#      - AWS_DEFAULT_REGION=eu-east-1
+#      - AWS_ENDPOINT_URL=http://sqs:9324
