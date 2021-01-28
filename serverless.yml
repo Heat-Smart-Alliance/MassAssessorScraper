@@ -1,0 +1,78 @@
+service: assessorscraper
+app: assessor-scraper
+# Plugins for the project
+plugins:
+  - serverless-offline-sqs
+  - serverless-offline-scheduler
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+package:
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - mongo-volume/**
+    - src/**
+    - scripts/**
+    - docker-compose.yml
+    - init-mongo.js
+    - .dockerignore
+    - README.md
+    - handlers/**
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:ReceiveMessage"
+        - "sqs:DeleteMessage"
+        - "sqs:GetQueueAttributes"
+      Resource: "arn:aws:sqs:${self:provider.region}:*:TownQueue"
+
+functions:
+  saveTowns:
+    handler: handlers/saveTowns/handler.saveTowns
+    package:
+      include:
+        - handlers/saveTowns/**
+    events:
+      - http:
+          path: saveTowns
+          method: get
+  saveLetters:
+    handler: handlers/saveLetters/handler.saveLetters
+    package:
+      include:
+        - handlers/saveLetters/**
+      exclude:
+        - models/**
+        - sharedUtils/databaseUtils.js
+        - sharedUtils/dateUtils.js
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - TownQueue
+              - Arn
+
+resources:
+  Resources:
+    TownQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "TownQueue"
+
+custom:
+  serverless-offline-sqs:
+    autoCreate: true                 # create queue if not exists
+    apiVersion: '2012-11-05'
+    endpoint: http://sqs:9324
+    region: us-east-1
+    accessKeyId: root
+    secretAccessKey: root
+    skipCacheInvalidation: false
