@@ -33,6 +33,21 @@ provider:
         - "sqs:DeleteMessage"
         - "sqs:GetQueueAttributes"
       Resource: "arn:aws:sqs:${self:provider.region}:*:TownQueue"
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:ReceiveMessage"
+        - "sqs:DeleteMessage"
+        - "sqs:GetQueueAttributes"
+      Resource: "arn:aws:sqs:${self:provider.region}:*:LetterQueue"
+
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:ReceiveMessage"
+        - "sqs:DeleteMessage"
+        - "sqs:GetQueueAttributes"
+      Resource: "arn:aws:sqs:${self:provider.region}:*:HouseQueue"
 
 functions:
   saveTowns:
@@ -59,6 +74,36 @@ functions:
             Fn::GetAtt:
               - TownQueue
               - Arn
+  saveStreets:
+    handler: handlers/saveStreets/handler.saveStreets
+    package:
+      include:
+        - handlers/saveStreets/**
+      exclude:
+        - models/**
+        - sharedUtils/databaseUtils.js
+        - sharedUtils/dateUtils.js
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - LetterQueue
+              - Arn
+  saveHouses:
+    handler: handlers/saveHouses/handler.saveHouses
+    package:
+      include:
+        - handlers/saveHouses/**
+      exclude:
+        - models/**
+        - sharedUtils/databaseUtils.js
+        - sharedUtils/dateUtils.js
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - HouseQueue
+              - Arn
 
 resources:
   Resources:
@@ -66,6 +111,14 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "TownQueue"
+    LetterQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "LetterQueue"
+    HouseQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "HouseQueue"
 
 custom:
   serverless-offline-sqs:

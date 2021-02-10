@@ -11,6 +11,7 @@
     "init-env": "sh scripts/create-queues.sh",
     "docker-start": "node_modules/.bin/serverless offline start --host 0.0.0.0 --region us-east-1",
     "start": "sh scripts/start.sh",
+    "stop": "sh scripts/stop.sh",
     "deploy": "serverless deploy --env production"
   },
   "keywords": [],

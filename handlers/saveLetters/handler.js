@@ -1,29 +1,36 @@
 'use strict';
 
-const {flat} = require("../../sharedUtils/arrayUtils");
+const { AWSQueue, parseRecord } = require("../../sharedUtils/awsUtils");
+const { flat, chunk } = require("../../sharedUtils/arrayUtils");
 const { loadData } = require("../../sharedUtils/cheerioUtils");
 const { LetterUtils } = require('./utils');
 
 module.exports.saveLetters = async (event, context, callback) => {
-    const towns = JSON.parse(event.Records[0].body);
+    const towns = parseRecord(event);
 
-    console.log(towns);
     const letterDataPromises = towns.map(async town => {
-        let townData = await loadData(town.townLink);
+        const townData = await loadData(town.townLink);
+
         // If a page fails to load, it will return null.
-        if(townData) {
-            let townUtil = new LetterUtils(town, townData);
-            return townUtil.getLetterLinks();
-        }
-        return null;
+        return townData ? new LetterUtils(town, townData).getLetterLinks() : null;
     });
 
 
     const letterData = await Promise.all(letterDataPromises)
 
-    let letterUtils = flat(letterData).filter(Boolean);
+    const queue = new AWSQueue("LetterQueue");
 
-    console.log(letterUtils);
+    const letterChunks = chunk(flat(letterData).filter(Boolean), 10);
+
+    const invokeStreetPromises = letterChunks.map(async letterArray => {
+       return await queue.invoke(letterArray);
+    });
+
+     try {
+         const streetMessages = await Promise.all(invokeStreetPromises);
+     } catch(e) {
+         console.log(e);
+     }
 
     context.done(null, '');
 };
