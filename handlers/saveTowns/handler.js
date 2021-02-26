@@ -15,6 +15,8 @@ const { TownUtils } = require('./utils');
  * @param callback - a callback function which signals the response of the function
  */
 module.exports.saveTowns = async (event, context, callback) => {
+    context.callbackWaitsForEmptyEventLoop = false;
+
     const baseLink = "https://www.vgsi.com/massachusetts-online-database/";
     const pageData = await loadData(baseLink);
 
@@ -22,7 +24,6 @@ module.exports.saveTowns = async (event, context, callback) => {
 
     const townsToUpdate = await townUtil.getTownsToUpdate();
 
-    console.log("Towns to update:", townsToUpdate);
     const townLinks = townUtil.getTownLinksToScrape(townsToUpdate);
 
     const queue = new AWSQueue("TownQueue");

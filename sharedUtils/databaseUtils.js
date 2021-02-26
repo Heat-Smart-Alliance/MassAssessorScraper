@@ -1,18 +1,30 @@
 const mongoose = require('mongoose');
 
+let cachedDb = null;
+
+function addRecordsToDatabase(db) {
+
+}
+
+
+
 /**
  * connectToDatabase connects to the mongo database and returns the mongoose connection
  * @returns the connection to the mongo database
  */
-async function connectToDB() {
-    await mongoose.connect(process.env.DATABASE_URL, {
+function connectToDB() {
+    if(cachedDb) {
+        const db = Promise.resolve(cachedDb);
+        return db;
+    }
+    return mongoose.connect(process.env.DATABASE_URL, {
         useNewUrlParser: true,
-        useUnifiedTopology: true
-    }).then(() => {
-        console.log("Connected to database");
+        useUnifiedTopology: true,
+        useFindAndModify: false
+    }).then((db) => {
+        cachedDb = db;
+        return db.connection;
     }).catch(e => console.log(e));
-    const db = mongoose.connection;
-    return db;
 }
 
 module.exports = {

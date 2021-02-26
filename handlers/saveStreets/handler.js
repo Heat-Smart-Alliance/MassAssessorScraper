@@ -8,7 +8,6 @@ const { AWSQueue, parseRecord } = require("../../sharedUtils/awsUtils");
 module.exports.saveStreets = async (event, context, callback) => {
     const letters = parseRecord(event);
 
-    console.log("Letters:", letters);
     const streetDataPromises = letters.map(async letter => {
         const letterData = await loadData(letter.letterLink);
 
@@ -18,22 +17,15 @@ module.exports.saveStreets = async (event, context, callback) => {
 
     const streetData = await Promise.all(streetDataPromises);
 
-
     const queue = new AWSQueue("HouseQueue");
 
+    const streetChunks = chunk(flat(streetData).filter(Boolean), 30);
 
-    const streetChunks = chunk(flat(streetData).filter(Boolean), 10);
+    await Promise.all(streetChunks.map(async streetArray => {
+        await queue.invoke(streetArray);
+    }));
 
-    console.log("Street Number:", streetChunks.length * 10);
-    const invokeHousePromises = streetChunks.map(async streetArray => {
-        return await queue.invoke(streetArray);
-    });
 
-    try {
-        const houseMessages = await Promise.all(invokeHousePromises);
-    } catch(e) {
-        console.log(`Error: ${e}`);
-    }
     context.done(null, '');
 
 }

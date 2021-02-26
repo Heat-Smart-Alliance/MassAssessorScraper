@@ -23,6 +23,7 @@ package:
 provider:
   name: aws
   runtime: nodejs12.x
+  memorySize: 512
   stage: dev
   region: us-east-1
   iamRoleStatements:
@@ -40,7 +41,6 @@ provider:
         - "sqs:DeleteMessage"
         - "sqs:GetQueueAttributes"
       Resource: "arn:aws:sqs:${self:provider.region}:*:LetterQueue"
-
     - Effect: "Allow"
       Action:
         - "sqs:SendMessage"
@@ -48,6 +48,20 @@ provider:
         - "sqs:DeleteMessage"
         - "sqs:GetQueueAttributes"
       Resource: "arn:aws:sqs:${self:provider.region}:*:HouseQueue"
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:ReceiveMessage"
+        - "sqs:DeleteMessage"
+        - "sqs:GetQueueAttributes"
+      Resource: "arn:aws:sqs:${self:provider.region}:*:ScrapeQueue"
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:ReceiveMessage"
+        - "sqs:DeleteMessage"
+        - "sqs:GetQueueAttributes"
+      Resource: "arn:aws:sqs:${self:provider.region}:*:DatabaseQueue"
 
 functions:
   saveTowns:
@@ -104,6 +118,35 @@ functions:
             Fn::GetAtt:
               - HouseQueue
               - Arn
+  scrapeHouses:
+    handler: handlers/scrapeHouses/handler.scrapeHouses
+    package:
+      include:
+        - handlers/scrapeHouses/**
+      exclude:
+        - models/**
+        - sharedUtils/databaseUtils.js
+        - sharedUtils/dateUtils.js
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - ScrapeQueue
+              - Arn
+  saveToDatabase:
+    handler: handlers/saveToDatabase/handler.saveToDatabase
+    package:
+      include:
+        - handlers/saveToDatabase/**
+        - models/**
+      exclude:
+        - sharedUtils/dateUtils.js
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - DatabaseQueue
+              - Arn
 
 resources:
   Resources:
@@ -119,6 +162,14 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "HouseQueue"
+    ScrapeQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "ScrapeQueue"
+    DatabaseQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "DatabaseQueue"
 
 custom:
   serverless-offline-sqs:

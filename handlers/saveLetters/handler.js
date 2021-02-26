@@ -20,17 +20,11 @@ module.exports.saveLetters = async (event, context, callback) => {
 
     const queue = new AWSQueue("LetterQueue");
 
-    const letterChunks = chunk(flat(letterData).filter(Boolean), 10);
+    const letterChunks = chunk(flat(letterData).filter(Boolean), 20);
 
-    const invokeStreetPromises = letterChunks.map(async letterArray => {
-       return await queue.invoke(letterArray);
-    });
-
-     try {
-         const streetMessages = await Promise.all(invokeStreetPromises);
-     } catch(e) {
-         console.log(e);
-     }
+    await Promise.all(letterChunks.map(async letterArray => {
+        return await queue.invoke(letterArray);
+    }));
 
     context.done(null, '');
 };

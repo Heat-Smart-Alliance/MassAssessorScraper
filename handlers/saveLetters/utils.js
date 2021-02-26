@@ -16,12 +16,13 @@ class LetterUtils extends CheerioUtils {
      * @returns an array of objects
      */
     getLetterLinks() {
-        const { baseLink } = this.link;
+        const { baseLink, townID } = this.link;
         const $ = this.$;
         const links = $('div.buttonMe a').map((i, a) => {
             return {
                 letterLink: `${baseLink}/${$(a).attr('href')}`,
-                baseLink: baseLink
+                baseLink,
+                townID
             }
         }).get();
         return links;

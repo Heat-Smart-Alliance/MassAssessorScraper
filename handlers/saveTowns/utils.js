@@ -29,17 +29,18 @@ class TownUtils extends CheerioUtils {
             const potentialLink = $(tableLink);
             const townName = potentialLink.text().split(", ")[0];
 
-            if(townsToUpdate.some(town => townName.includes(town))) {
+            if(townsToUpdate.some(({name}) => townName.includes(name))) {
                 let linkToUpdate = tableLink.attribs.href;
                 const townLink = linkToUpdate.endsWith('/') ? linkToUpdate.slice(0, -1) : `${linkToUpdate}`;
                 const streetsSuffix = 'Streets.aspx';
-                return {
+                const data = {
                     townLink: `${townLink}/${streetsSuffix}`,
-                    baseLink: townLink
-                }
+                    baseLink: townLink,
+                    townID: townsToUpdate.find(({name}) => name == townName).id._id
+                };
+                return data;
             }
         }).get();
-
         return townLinksToUpdate;
     }
 
@@ -70,10 +71,14 @@ class TownUtils extends CheerioUtils {
                         name
                     }
                     const options = {
-                        upsert: true
+                        upsert: true,
+                        new: true
                     }
-                    await Town.updateOne(filter, town, options);
-                    return name;
+                    const id = await Town.findOneAndUpdate(filter, town, options, (e, object) => {
+                        return object._id;
+                    });
+
+                    return { id, name };
                 }
             }
             return false;

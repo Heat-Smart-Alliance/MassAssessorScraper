@@ -7,12 +7,13 @@ class StreetUtils extends CheerioUtils {
     }
 
     getStreetLinks(){
-        const { baseLink } = this.link;
+        const { baseLink, townID } = this.link;
         const $ = this.$;
         const links = $('li.fixedButton a').map((i, a) => {
             return {
                 streetLink: `${baseLink}/${$(a).attr('href')}`,
-                baseLink
+                baseLink,
+                townID
             };
         }).get();
 
