@@ -17,6 +17,33 @@ const houseSchema = new Schema({
     townID: {
         type: mongoose.Types.ObjectId,
         required: true
+    },
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+        },
+        coordinates: {
+            type: [Number]
+        }
+    },
+    owner: {
+        type: String,
+    },
+    assessment: {
+        type: String,
+    },
+    salePrice: {
+        type: String,
+    },
+    saleDate: {
+        type: String,
+    },
+    yearBuilt: {
+        type: String,
+    },
+    pid: {
+        type: String
     }
     // civicData: [CivicSchema],
     // heatType: {
@@ -54,11 +81,7 @@ const houseSchema = new Schema({
     //     required: false,
     //     set: deleteEmpty
     // },
-    // assessment: {
-    //     type: String,
-    //     required: false,
-    //     set: deleteEmpty
-    // },
+
     // salePrice: {
     //     type: String,
     //     required: false,

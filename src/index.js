@@ -41,7 +41,6 @@ const House = require('../models/House');
                 .then(response => response)
                 .then(data => console.log(data))
                 .catch(err => console.log(err))
-            // Civic Data Key: AIzaSyCqLyvHP2GlwqHgGWrMqKoaY16MtX8wTP4
             // const squareFeetTable = document.getElementById("MainContent_ctl01_grdSub").getElementsByClassName("FooterStyle");
             return {
                 // appraisal: document.getElementById("MainContent_lblGenAppraisal").innerText,
