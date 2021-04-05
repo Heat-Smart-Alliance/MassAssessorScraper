@@ -1,5 +1,6 @@
 const { singleSpaces } = require("../../sharedUtils/stringUtils");
 const { CheerioUtils } = require("../../sharedUtils/cheerioUtils");
+const cheerioTableParser = require('cheerio-tableparser');
 
 class ScraperUtils extends CheerioUtils {
     constructor(link, ...pageData) {
@@ -20,6 +21,12 @@ class ScraperUtils extends CheerioUtils {
     getPageContent() {
         const $ = this.$;
         const { townID } = this.link;
+
+        cheerioTableParser($);
+
+        const tableData = $('#MainContent_ctl01_grdCns').parsetable();
+        console.log("Table data: ", tableData);
+
         const data = {
             townID,
             owner: $("#MainContent_lblGenOwner").text(),

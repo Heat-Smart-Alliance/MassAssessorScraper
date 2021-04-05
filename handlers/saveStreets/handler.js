@@ -19,7 +19,9 @@ module.exports.saveStreets = async (event, context, callback) => {
 
     const queue = new AWSQueue("HouseQueue");
 
-    const streetChunks = chunk(flat(streetData).filter(Boolean), 30);
+    const streetChunks = chunk(flat(streetData).filter(Boolean), 5);
+
+    console.log(`There are ${streetChunks.length} street chunks!`);
 
     await Promise.all(streetChunks.map(async streetArray => {
         await queue.invoke(streetArray);
