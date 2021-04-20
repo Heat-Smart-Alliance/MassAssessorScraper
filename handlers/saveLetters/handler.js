@@ -8,7 +8,6 @@ const { LetterUtils } = require('./utils');
 module.exports.saveLetters = async (event, context, callback) => {
     const towns = parseRecord(event);
 
-    console.log("hello")
     const letterDataPromises = towns.map(async town => {
         const townData = await loadData(town.townLink);
 
@@ -20,11 +19,13 @@ module.exports.saveLetters = async (event, context, callback) => {
 
     const queue = new AWSQueue("LetterQueue");
 
-    const letterChunks = chunk(flat(letterData).filter(Boolean), 20);
+    const letterChunks = chunk(flat(letterData).filter(Boolean), 3);
 
-    letterChunks.forEach(letterArray => {
-        queue.invoke(letterArray);
-    });
+    console.log(`There are ${letterChunks.length} letter chunks!`);
+
+    await Promise.all(letterChunks.map(async letterArray => {
+        await queue.invoke(letterArray);
+    }));
 
     context.done(null, '');
 };

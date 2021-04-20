@@ -1,6 +1,7 @@
 'use strict';
 
 const Town = require("../../models/Town");
+const House = require("../../models/House");
 const { CheerioUtils } = require('../../sharedUtils/cheerioUtils');
 const { connectToDB } = require("../../sharedUtils/databaseUtils");
 const { convertTownDate } = require("../../sharedUtils/dateUtils");

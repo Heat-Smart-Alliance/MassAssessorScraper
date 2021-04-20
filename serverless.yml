@@ -73,6 +73,15 @@ functions:
       - http:
           path: saveTowns
           method: get
+  singleTown:
+    handler: handlers/singleTown/handler.singleTown
+    package:
+      include:
+        - handlers/singleTown/**
+    events:
+      - http:
+          path: singleTown
+          method: get
   saveLetters:
     handler: handlers/saveLetters/handler.saveLetters
     package:

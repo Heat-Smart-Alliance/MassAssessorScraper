@@ -2,12 +2,6 @@ const mongoose = require('mongoose');
 
 let cachedDb = null;
 
-function addRecordsToDatabase(db) {
-
-}
-
-
-
 /**
  * connectToDatabase connects to the mongo database and returns the mongoose connection
  * @returns the connection to the mongo database
