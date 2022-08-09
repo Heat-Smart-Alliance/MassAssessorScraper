@@ -6,7 +6,7 @@ This project requires an installation of Docker, Docker Compose and Serverless O
 ## About this project
 This is a web scraper which scrapes Massachusetts housing data from the 
 [Massachusetts Assessor’s Online Database](https://www.vgsi.com/massachusetts-online-database/) using 
-[puppeteer](https://github.com/puppeteer/puppeteer).
+[cheerio](https://cheerio.js.org/).
 
 Currently, this web scraper only prints out the heating data of the household. 
 The goal of this project is to collect as much information as possible, and record that in a Mongo 
